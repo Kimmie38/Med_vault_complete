@@ -1,9 +1,11 @@
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 // Set EXPO_PUBLIC_API_URL to the reachable backend URL, including /api.
 const DEFAULT_BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:4000/api' : 'http://localhost:4000/api';
-const BASE_URL = (process.env.EXPO_PUBLIC_API_URL || DEFAULT_BASE_URL).replace(/\/$/, '');
+const RUNTIME_ENV_URL = (Constants.expoConfig && Constants.expoConfig.extra && Constants.expoConfig.extra.EXPO_PUBLIC_API_URL) || process.env.EXPO_PUBLIC_API_URL;
+const BASE_URL = (RUNTIME_ENV_URL || DEFAULT_BASE_URL).replace(/\/$/, '');
 const TOKEN_KEY = '@medvault/session-token';
 const ROLE_KEY = '@medvault/session-role';
 
