@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "MedVault",
+    "slug": "medvault",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "userInterfaceStyle": "automatic",
+    "backgroundColor": "#060A0C",
+    "splash": {
+      "image": "./assets/images/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#060A0C"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "MedVault uses the camera to scan drug barcodes when you add stock."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#060A0C",
+        "foregroundImage": "./assets/images/logo.png"
+      },
+      "permissions": [
+        "CAMERA",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.medvaultapp.medvault"
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "MedVault uses the camera to scan drug barcodes when you add stock."
+        }
+      ],
+      "expo-font"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "4c9806ab-d9bd-4744-9df7-ea908addee30"
+      }
+    },
+    "owner": "medvaultapp"
+  }
+}

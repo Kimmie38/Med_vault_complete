@@ -1,0 +1,79 @@
+digraph MedVaultERD {
+  rankdir=LR;
+  splines=true;
+  nodesep=0.55;
+  ranksep=1.25;
+  bgcolor="white";
+  node [shape=plaintext, fontname="DejaVu Sans", fontsize=13];
+  edge [fontname="DejaVu Sans", fontsize=10, color="#444444", dir=both, arrowsize=1.1, penwidth=1.3, labeldistance=3.4, labelangle=35, labelfontsize=11];
+
+  User [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#2F5F8F" BGCOLOR="#EAF2FB">
+      <TR><TD ROWSPAN="7"><B>User</B></TD><TD ALIGN="LEFT"><B>PK</B> UserID</TD></TR>
+      <TR><TD ALIGN="LEFT">Name</TD></TR>
+      <TR><TD ALIGN="LEFT">Role</TD></TR>
+      <TR><TD ALIGN="LEFT">Email</TD></TR>
+      <TR><TD ALIGN="LEFT">StaffID</TD></TR>
+      <TR><TD ALIGN="LEFT">PasswordHash</TD></TR>
+      <TR><TD ALIGN="LEFT">PharmacyName</TD></TR>
+    </TABLE>>];
+
+  Drug [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#2F5F8F" BGCOLOR="#EAF2FB">
+      <TR><TD ROWSPAN="6"><B>Drug</B></TD><TD ALIGN="LEFT"><B>PK</B> DrugID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> UserID</TD></TR>
+      <TR><TD ALIGN="LEFT">Name</TD></TR>
+      <TR><TD ALIGN="LEFT">Category</TD></TR>
+      <TR><TD ALIGN="LEFT">Barcode</TD></TR>
+      <TR><TD ALIGN="LEFT">ReorderLevel</TD></TR>
+    </TABLE>>];
+
+  Supplier [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#2F5F8F" BGCOLOR="#EAF2FB">
+      <TR><TD ROWSPAN="5"><B>Supplier</B></TD><TD ALIGN="LEFT"><B>PK</B> SupplierID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> UserID</TD></TR>
+      <TR><TD ALIGN="LEFT">Name</TD></TR>
+      <TR><TD ALIGN="LEFT">ContactInfo</TD></TR>
+      <TR><TD ALIGN="LEFT">Address</TD></TR>
+    </TABLE>>];
+
+  Batch [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#2F5F8F" BGCOLOR="#EAF2FB">
+      <TR><TD ROWSPAN="7"><B>Batch</B></TD><TD ALIGN="LEFT"><B>PK</B> BatchID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> DrugID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> SupplierID</TD></TR>
+      <TR><TD ALIGN="LEFT">BatchNumber</TD></TR>
+      <TR><TD ALIGN="LEFT">Quantity</TD></TR>
+      <TR><TD ALIGN="LEFT">ExpiryDate</TD></TR>
+      <TR><TD ALIGN="LEFT">DateReceived</TD></TR>
+    </TABLE>>];
+
+  Sale [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#2F5F8F" BGCOLOR="#EAF2FB">
+      <TR><TD ROWSPAN="4"><B>Sale</B></TD><TD ALIGN="LEFT"><B>PK</B> SaleID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> BatchID</TD></TR>
+      <TR><TD ALIGN="LEFT">QuantitySold</TD></TR>
+      <TR><TD ALIGN="LEFT">DateSold</TD></TR>
+    </TABLE>>];
+
+  Alert [label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="7" COLOR="#2F5F8F" BGCOLOR="#EAF2FB">
+      <TR><TD ROWSPAN="8"><B>Alert</B></TD><TD ALIGN="LEFT"><B>PK</B> AlertID</TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> BatchID <FONT POINT-SIZE="10" COLOR="#555555">(null for low-stock)</FONT></TD></TR>
+      <TR><TD ALIGN="LEFT"><B>FK</B> DrugID <FONT POINT-SIZE="10" COLOR="#555555">(null for expiry)</FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">AlertType <FONT POINT-SIZE="10" COLOR="#555555">(Expiry | LowStock)</FONT></TD></TR>
+      <TR><TD ALIGN="LEFT">AlertTier</TD></TR>
+      <TR><TD ALIGN="LEFT">Status</TD></TR>
+      <TR><TD ALIGN="LEFT">CreatedAt</TD></TR>
+      <TR><TD ALIGN="LEFT">ResolvedAt</TD></TR>
+    </TABLE>>];
+
+  // one ---- many relationships (crow's foot). "1" = exactly one, "0..*" = zero or many, "1..*" = one or many
+  User     -> Drug     [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="0..*", label="registers"];
+ User     -> Supplier [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="0..*", label="keeps"];
+  Drug     -> Batch    [arrowtail=teetee, arrowhead=crowtee,  taillabel="1", headlabel="1..*", label="has"];
+  Supplier -> Batch    [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="0..*", label="supplies"];
+  Batch    -> Sale     [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="0..*", label="sold from"];
+  Batch    -> Alert    [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="0..*", label="expiry alert"];
+  Drug     -> Alert    [arrowtail=teetee, arrowhead=crowodot, taillabel="1", headlabel="0..*", label="low-stock alert", constraint=false];
+}
