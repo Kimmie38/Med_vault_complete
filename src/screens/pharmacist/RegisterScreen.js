@@ -59,7 +59,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <Pressable onPress={() => navigation.goBack()} style={styles.backBtn} hitSlop={10}>
           <Ionicons name="chevron-back" size={22} color={colors.textPrimary} />
@@ -92,7 +92,7 @@ export default function RegisterScreen({ navigation }) {
 }
 
 const createStyles = (colors, theme) => StyleSheet.create({
-  container: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingTop: 70, paddingBottom: 48 },
+  container: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingTop: 70, paddingBottom: 220 },
   backBtn: { width: 34, height: 34, borderRadius: 17, backgroundColor: colors.bgElevated2, alignItems: 'center', justifyContent: 'center', marginBottom: spacing.lg },
   title: { color: colors.textPrimary, ...type.h1 },
   subtitle: { color: colors.textSecondary, ...type.body, marginTop: 8, lineHeight: 20 },

@@ -6,7 +6,6 @@ import BrandLogo from '../../components/BrandLogo';
 import { spacing, type } from '../../theme/theme';
 import { useThemedStyles } from '../../theme/ThemeContext';
 import { api } from '../../api/client';
-import Constants from 'expo-constants';
 
 export default function LoginScreen({ navigation }) {
   const { colors, styles } = useThemedStyles(createStyles);
@@ -34,17 +33,10 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <BrandLogo size={104} showName nameSize={30} style={styles.logo} />
 
-        {/* Debug badge: shows resolved API URL at runtime for deployed builds */}
-        <View style={styles.debugWrap}>
-          <Text style={styles.debugLabel}>API:</Text>
-          <Text style={styles.debugValue} numberOfLines={1} ellipsizeMode="middle">
-            {Constants?.expoConfig?.extra?.EXPO_PUBLIC_API_URL || Constants?.manifest?.extra?.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_API_URL || 'MISSING'}
-          </Text>
-        </View>
 
         <Text style={styles.title}>Welcome back</Text>
         <Text style={styles.subtitle}>Log in to manage your pharmacy stock</Text>
@@ -88,7 +80,7 @@ export default function LoginScreen({ navigation }) {
 }
 
 const createStyles = (colors, theme) => StyleSheet.create({
-  container: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingTop: 70, paddingBottom: 40, alignItems: 'center' },
+  container: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingTop: 70, paddingBottom: 220, alignItems: 'center' },
   logo: { marginBottom: spacing.lg, marginTop: spacing.lg },
   title: { color: colors.textPrimary, ...type.h1 },
   subtitle: { color: colors.textSecondary, ...type.body, marginTop: 6 },
