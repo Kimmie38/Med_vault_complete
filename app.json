@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MedVault",
-    "slug": "medvault",
+    "slug": "medvault-6uuxkv8du0nejzicracjj",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -21,7 +21,7 @@
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#060A0C",
-        "foregroundImage": "./assets/images/logo.png"
+        "foregroundImage": "./assets/images/icon.png"
       },
       "permissions": [
         "CAMERA",
@@ -44,7 +44,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "4c9806ab-d9bd-4744-9df7-ea908addee30"
+        "projectId": "53c5d605-0153-4793-bfc7-95ccf9c4fb72"
       }
     },
     "owner": "medvaultapp"
