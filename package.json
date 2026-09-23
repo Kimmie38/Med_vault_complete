@@ -21,6 +21,9 @@
     "react-native-screens": "~4.16.0",
     "react-native-web": "~0.21.0"
   },
+  "devDependencies": {
+    "dotenv": "^16.3.1"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

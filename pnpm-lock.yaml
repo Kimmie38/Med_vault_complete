@@ -59,6 +59,10 @@ importers:
       react-native-web:
         specifier: ~0.21.0
         version: 0.21.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+    devDependencies:
+      dotenv:
+        specifier: ^16.3.1
+        version: 16.4.7
 
 packages:
 
