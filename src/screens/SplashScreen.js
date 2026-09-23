@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Image, Animated, Easing, StyleSheet, Text, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Constants from 'expo-constants';
 import { darkColors } from '../theme/theme';
 import { restoreSession } from '../api/client';
 
@@ -123,6 +124,13 @@ export default function SplashScreen({ navigation }) {
         <Animated.View style={{ opacity: tagOpacity, transform: [{ translateY: tagY }] }}>
           <Text style={styles.tagline}>Track stock. Prevent expiry. Forecast demand.</Text>
         </Animated.View>
+
+        {/* Debug: show resolved API URL at startup to verify env mapping during builds */}
+        <View style={{ marginTop: 12 }}>
+          <Text style={styles.debugText} selectable>
+            {`API: ${Constants?.expoConfig?.extra?.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_API_URL || 'MISSING'}`}
+          </Text>
+        </View>
       </View>
     </LinearGradient>
   );
@@ -137,4 +145,5 @@ const styles = StyleSheet.create({
   med: { color: c.textPrimary, fontSize: 40, fontWeight: '800', letterSpacing: -1 },
   vault: { color: c.greenLight, fontSize: 40, fontWeight: '300', letterSpacing: -1 },
   tagline: { color: c.textSecondary, fontSize: 13, marginTop: 14, letterSpacing: 0.3 },
+  debugText: { color: '#9aa7ad', fontSize: 11, marginTop: 6 },
 });

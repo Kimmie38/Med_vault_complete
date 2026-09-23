@@ -6,6 +6,7 @@ import BrandLogo from '../../components/BrandLogo';
 import { spacing, type } from '../../theme/theme';
 import { useThemedStyles } from '../../theme/ThemeContext';
 import { api } from '../../api/client';
+import Constants from 'expo-constants';
 
 export default function LoginScreen({ navigation }) {
   const { colors, styles } = useThemedStyles(createStyles);
@@ -36,6 +37,14 @@ export default function LoginScreen({ navigation }) {
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: colors.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <BrandLogo size={104} showName nameSize={30} style={styles.logo} />
+
+        {/* Debug badge: shows resolved API URL at runtime for deployed builds */}
+        <View style={styles.debugWrap}>
+          <Text style={styles.debugLabel}>API:</Text>
+          <Text style={styles.debugValue} numberOfLines={1} ellipsizeMode="middle">
+            {Constants?.expoConfig?.extra?.EXPO_PUBLIC_API_URL || Constants?.manifest?.extra?.EXPO_PUBLIC_API_URL || process.env.EXPO_PUBLIC_API_URL || 'MISSING'}
+          </Text>
+        </View>
 
         <Text style={styles.title}>Welcome back</Text>
         <Text style={styles.subtitle}>Log in to manage your pharmacy stock</Text>
@@ -87,4 +96,7 @@ const createStyles = (colors, theme) => StyleSheet.create({
   signupRow: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.lg },
   signupText: { color: colors.textSecondary, ...type.small },
   signupLink: { color: colors.greenLight, ...type.small, fontWeight: '700' },
+  debugWrap: { marginTop: 8, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, backgroundColor: 'rgba(0,0,0,0.04)', flexDirection: 'row', alignItems: 'center' },
+  debugLabel: { color: colors.textSecondary, marginRight: 6, fontSize: 11 },
+  debugValue: { color: colors.textSecondary, fontSize: 11, maxWidth: 260 },
 });

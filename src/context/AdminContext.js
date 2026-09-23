@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { api, getToken, subscribeAuth } from '../api/client';
+import { api, getToken, subscribeAuth, getSessionRole } from '../api/client';
 
 const AdminContext = createContext(null);
 const normalizeAlert = (a) => ({ ...a, tier: a.tier || a.alertTier, type: a.type || a.alertType, alertId: a.alertId || a._id });
@@ -13,7 +13,10 @@ export function AdminProvider({ children }) {
   const [totals, setTotals] = useState({ users: 0, active: 0, suspended: 0, newThisWeek: 0, dormant: 0, drugs: 0, batches: 0, unitsSoldThisWeek: 0, openAlerts: 0, attention: 0, expired: 0, weekly: [] });
 
   const loadUsers = useCallback(async () => {
-    if (!getToken()) return [];
+    if (!getToken() || getSessionRole() !== 'admin') {
+      setPharmacies([]);
+      return [];
+    }
     const usersResult = await api.request('/admin/users?filter=all&limit=100');
     const users = (usersResult.users || []).map(normalizeUser);
     const details = await Promise.all(users.map(async (user) => {
@@ -29,7 +32,14 @@ export function AdminProvider({ children }) {
   }, []);
 
   const load = useCallback(async () => {
-    if (!getToken()) return;
+    if (!getToken() || getSessionRole() !== 'admin') {
+      setAdmin(null);
+      setPharmacies([]);
+      setAlerts([]);
+      setActivity([]);
+      return;
+    }
+
     await loadUsers();
     const [meResult, overviewResult, alertsResult, activityResult] = await Promise.allSettled([
       api.request('/admin/me'), api.request('/admin/overview'), api.request('/admin/alerts?limit=200'), api.request('/admin/activity?limit=200'),
@@ -53,10 +63,22 @@ export function AdminProvider({ children }) {
 
   const getUser = useCallback((userId) => pharmacies.find((user) => user.userId === userId), [pharmacies]);
   const updateUser = useCallback((userId, userPatch) => setPharmacies((prev) => prev.map((user) => user.userId === userId ? { ...user, ...userPatch } : user)), []);
-  const suspendUser = useCallback(async (userId) => { const result = await api.request(`/admin/users/${userId}/suspend`, { method: 'POST' }); updateUser(userId, result.user); }, [updateUser]);
-  const reactivateUser = useCallback(async (userId) => { const result = await api.request(`/admin/users/${userId}/reactivate`, { method: 'POST' }); updateUser(userId, result.user); }, [updateUser]);
-  const resetPassword = useCallback(async (userId) => { const result = await api.request(`/admin/users/${userId}/reset-password`, { method: 'POST' }); updateUser(userId, result.user); return result.temporaryPassword; }, [updateUser]);
-  const deleteUser = useCallback(async (userId) => { await api.request(`/admin/users/${userId}`, { method: 'DELETE' }); setPharmacies((prev) => prev.filter((user) => user.userId !== userId)); }, []);
+  const suspendUser = useCallback(async (userId) => {
+    if (getSessionRole() !== 'admin') throw new Error('Administrator access required');
+    const result = await api.request(`/admin/users/${userId}/suspend`, { method: 'POST' }); updateUser(userId, result.user);
+  }, [updateUser]);
+  const reactivateUser = useCallback(async (userId) => {
+    if (getSessionRole() !== 'admin') throw new Error('Administrator access required');
+    const result = await api.request(`/admin/users/${userId}/reactivate`, { method: 'POST' }); updateUser(userId, result.user);
+  }, [updateUser]);
+  const resetPassword = useCallback(async (userId) => {
+    if (getSessionRole() !== 'admin') throw new Error('Administrator access required');
+    const result = await api.request(`/admin/users/${userId}/reset-password`, { method: 'POST' }); updateUser(userId, result.user); return result.temporaryPassword;
+  }, [updateUser]);
+  const deleteUser = useCallback(async (userId) => {
+    if (getSessionRole() !== 'admin') throw new Error('Administrator access required');
+    await api.request(`/admin/users/${userId}`, { method: 'DELETE' }); setPharmacies((prev) => prev.filter((user) => user.userId !== userId));
+  }, []);
   const adminLogin = useCallback(() => null, []);
   const checkLogin = useCallback(() => ({ ok: true }), []);
   const value = useMemo(() => ({ admin, pharmacies, alerts, activity, totals, getUser, refreshUsers: loadUsers, suspendUser, reactivateUser, resetPassword, deleteUser, adminLogin, checkLogin }), [admin, pharmacies, alerts, activity, totals, getUser, loadUsers, suspendUser, reactivateUser, resetPassword, deleteUser, adminLogin, checkLogin]);

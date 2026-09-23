@@ -4,8 +4,23 @@ import Constants from 'expo-constants';
 
 // Set EXPO_PUBLIC_API_URL to the reachable backend URL, including /api.
 const DEFAULT_BASE_URL = Platform.OS === 'android' ? 'http://10.0.2.2:4000/api' : 'http://localhost:4000/api';
-const RUNTIME_ENV_URL = (Constants.expoConfig && Constants.expoConfig.extra && Constants.expoConfig.extra.EXPO_PUBLIC_API_URL) || process.env.EXPO_PUBLIC_API_URL;
+const getRuntimeApiUrl = () => {
+  // expo config evaluated at build time
+  const fromExpoConfig = Constants.expoConfig && Constants.expoConfig.extra && Constants.expoConfig.extra.EXPO_PUBLIC_API_URL;
+  // older SDKs / some runtimes expose manifest
+  const fromManifest = Constants.manifest && Constants.manifest.extra && Constants.manifest.extra.EXPO_PUBLIC_API_URL;
+  const fromProcess = process.env && process.env.EXPO_PUBLIC_API_URL;
+  return fromExpoConfig || fromManifest || fromProcess || null;
+};
+
+const RUNTIME_ENV_URL = getRuntimeApiUrl();
 const BASE_URL = (RUNTIME_ENV_URL || DEFAULT_BASE_URL).replace(/\/$/, '');
+
+// Debug log to help verify which base URL the app resolves at runtime
+try {
+  // eslint-disable-next-line no-console
+  console.log('[medvault] Resolved BASE_URL ->', BASE_URL, { fromExpoConfig: Constants.expoConfig && Constants.expoConfig.extra, fromManifest: Constants.manifest && Constants.manifest.extra });
+} catch (e) { }
 const TOKEN_KEY = '@medvault/session-token';
 const ROLE_KEY = '@medvault/session-role';
 
@@ -30,22 +45,41 @@ async function persistSession(nextToken, role) {
     await AsyncStorage.multiRemove([TOKEN_KEY, ROLE_KEY]);
     return;
   }
+  // Debug: log stored role and masked token
+  try {
+    const masked = nextToken ? `${nextToken.slice(0, 6)}...` : 'no-token';
+    // eslint-disable-next-line no-console
+    console.log('[medvault] persistSession ->', { maskedToken: masked, storedRole: role ? 'admin' : 'pharmacist' });
+  } catch (e) {}
   await AsyncStorage.multiSet([[TOKEN_KEY, nextToken], [ROLE_KEY, role ? 'admin' : 'pharmacist']]);
 }
 
 async function request(path, options = {}) {
   const headers = { Accept: 'application/json', ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
   if (token) headers.Authorization = `Bearer ${token}`;
+  // Debug: log outgoing request details (mask token)
+  try {
+    const masked = token ? `${token.slice(0, 6)}...` : 'no-token';
+    // eslint-disable-next-line no-console
+    console.log('[medvault] Request ->', { method: options.method || 'GET', url: `${BASE_URL}${path}`, token: masked, headers });
+  } catch (e) { }
   let response;
   try {
     response = await fetch(`${BASE_URL}${path}`, { ...options, headers, body: options.body && typeof options.body !== 'string' ? JSON.stringify(options.body) : options.body });
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log('[medvault] Network error ->', error && error.message);
     throw new Error('We couldn’t connect right now. Please check your internet connection and try again.');
   }
   const text = await response.text();
   let payload = {};
   try { payload = text ? JSON.parse(text) : {}; } catch { payload = { message: text }; }
   if (!response.ok) {
+    // Debug: log response status and body for failed requests
+    try {
+      // eslint-disable-next-line no-console
+      console.log('[medvault] Response ERROR ->', { url: `${BASE_URL}${path}`, status: response.status, body: payload });
+    } catch (e) { }
     const fallback = response.status === 401
       ? 'Your session has ended. Please sign in again.'
       : response.status === 403
