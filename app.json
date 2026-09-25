@@ -24,9 +24,7 @@
         "foregroundImage": "./assets/images/icon.png"
       },
       "permissions": [
-        "CAMERA",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "CAMERA"
       ],
       "package": "com.medvaultapp.medvault"
     },
@@ -37,7 +35,9 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "MedVault uses the camera to scan drug barcodes when you add stock."
+          "cameraPermission": "MedVault uses the camera to scan drug barcodes when you add stock.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
       ],
       "expo-font"

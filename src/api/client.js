@@ -16,11 +16,13 @@ const getRuntimeApiUrl = () => {
 const RUNTIME_ENV_URL = getRuntimeApiUrl();
 const BASE_URL = (RUNTIME_ENV_URL || DEFAULT_BASE_URL).replace(/\/$/, '');
 
-// Debug log to help verify which base URL the app resolves at runtime
-try {
-  // eslint-disable-next-line no-console
-  console.log('[medvault] Resolved BASE_URL ->', BASE_URL, { fromExpoConfig: Constants.expoConfig && Constants.expoConfig.extra, fromManifest: Constants.manifest && Constants.manifest.extra });
-} catch (e) { }
+// Debug log to help verify which base URL the app resolves at runtime (dev only)
+if (__DEV__) {
+  try {
+    // eslint-disable-next-line no-console
+    console.log('[medvault] Resolved BASE_URL ->', BASE_URL, { fromExpoConfig: Constants.expoConfig && Constants.expoConfig.extra, fromManifest: Constants.manifest && Constants.manifest.extra });
+  } catch (e) { }
+}
 const TOKEN_KEY = '@medvault/session-token';
 const ROLE_KEY = '@medvault/session-role';
 
@@ -45,24 +47,28 @@ async function persistSession(nextToken, role) {
     await AsyncStorage.multiRemove([TOKEN_KEY, ROLE_KEY]);
     return;
   }
-  // Debug: log stored role and masked token
-  try {
-    const masked = nextToken ? `${nextToken.slice(0, 6)}...` : 'no-token';
-    // eslint-disable-next-line no-console
-    console.log('[medvault] persistSession ->', { maskedToken: masked, storedRole: role ? 'admin' : 'pharmacist' });
-  } catch (e) {}
+  // Debug: log stored role and masked token (dev only)
+  if (__DEV__) {
+    try {
+      const masked = nextToken ? `${nextToken.slice(0, 6)}...` : 'no-token';
+      // eslint-disable-next-line no-console
+      console.log('[medvault] persistSession ->', { maskedToken: masked, storedRole: role ? 'admin' : 'pharmacist' });
+    } catch (e) {}
+  }
   await AsyncStorage.multiSet([[TOKEN_KEY, nextToken], [ROLE_KEY, role ? 'admin' : 'pharmacist']]);
 }
 
 async function request(path, options = {}) {
   const headers = { Accept: 'application/json', ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...(options.headers || {}) };
   if (token) headers.Authorization = `Bearer ${token}`;
-  // Debug: log outgoing request details (mask token)
-  try {
-    const masked = token ? `${token.slice(0, 6)}...` : 'no-token';
-    // eslint-disable-next-line no-console
-    console.log('[medvault] Request ->', { method: options.method || 'GET', url: `${BASE_URL}${path}`, token: masked, headers });
-  } catch (e) { }
+  // Debug: log outgoing request details (mask token) (dev only)
+  if (__DEV__) {
+    try {
+      const masked = token ? `${token.slice(0, 6)}...` : 'no-token';
+      // eslint-disable-next-line no-console
+      console.log('[medvault] Request ->', { method: options.method || 'GET', url: `${BASE_URL}${path}`, token: masked, headers });
+    } catch (e) { }
+  }
   let response;
   try {
     response = await fetch(`${BASE_URL}${path}`, { ...options, headers, body: options.body && typeof options.body !== 'string' ? JSON.stringify(options.body) : options.body });
@@ -75,11 +81,13 @@ async function request(path, options = {}) {
   let payload = {};
   try { payload = text ? JSON.parse(text) : {}; } catch { payload = { message: text }; }
   if (!response.ok) {
-    // Debug: log response status and body for failed requests
-    try {
-      // eslint-disable-next-line no-console
-      console.log('[medvault] Response ERROR ->', { url: `${BASE_URL}${path}`, status: response.status, body: payload });
-    } catch (e) { }
+    // Debug: log response status and body for failed requests (dev only)
+    if (__DEV__) {
+      try {
+        // eslint-disable-next-line no-console
+        console.log('[medvault] Response ERROR ->', { url: `${BASE_URL}${path}`, status: response.status, body: payload });
+      } catch (e) { }
+    }
     const fallback = response.status === 401
       ? 'Your session has ended. Please sign in again.'
       : response.status === 403
@@ -135,6 +143,14 @@ export const api = {
     await persistSession(null);
   },
   me: () => request('/auth/me'),
+  // Change the signed-in user's password. Requires the current password (no email/OTP
+  // verification step). The backend rotates the session token, so we store the new one.
+  changePassword: async (currentPassword, newPassword) => {
+    const result = await request('/auth/change-password', { method: 'POST', body: { currentPassword, newPassword } });
+    setToken(result.token, sessionRole);
+    await persistSession(result.token, sessionRole === 'admin');
+    return result;
+  },
 };
 
 export default api;

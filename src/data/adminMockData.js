@@ -81,7 +81,7 @@ export const seedUsers = [
     ]),
   },
   {
-    userId: 'u4', name: 'Ibrahim Musa', role: 'Pharmacy attendant', email: 'ibrahim.musa@musacare.ng', staffId: 'STF-0425',
+    userId: 'u4', name: 'Ibrahim Musa', role: 'Staff', email: 'ibrahim.musa@musacare.ng', staffId: 'STF-0425',
     pharmacyName: 'Musa Care Pharmacy', location: 'Sabon Gari, Kano', status: 'active', createdDaysAgo: 96, lastActiveMinutesAgo: 1500,
     weekly: [44, 50, 47, 39, 52, 41],
     inventory: stock([
@@ -102,7 +102,7 @@ export const seedUsers = [
     ]),
   },
   {
-    userId: 'u6', name: 'Emeka Nwosu', role: 'Pharmacy attendant', email: 'emeka.nwosu@nwosumeds.com', staffId: 'STF-0648',
+    userId: 'u6', name: 'Emeka Nwosu', role: 'Staff', email: 'emeka.nwosu@nwosumeds.com', staffId: 'STF-0648',
     pharmacyName: 'Nwosu Meds', location: 'GRA, Port Harcourt', status: 'active', createdDaysAgo: 61, lastActiveMinutesAgo: 30,
     weekly: [22, 35, 41, 48, 55, 63],
     inventory: stock([
@@ -133,7 +133,7 @@ export const seedUsers = [
     ]),
   },
   {
-    userId: 'u9', name: 'Sade Ogunleye', role: 'Pharmacy attendant', email: 'sade.ogunleye@gmail.com', staffId: 'STF-0904',
+    userId: 'u9', name: 'Sade Ogunleye', role: 'Staff', email: 'sade.ogunleye@gmail.com', staffId: 'STF-0904',
     pharmacyName: 'Ogunleye Pharmacy', location: 'Surulere, Lagos', status: 'active', createdDaysAgo: 2, lastActiveMinutesAgo: 400,
     weekly: [0, 0, 0, 0, 0, 0],
     inventory: [],

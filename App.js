@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import SplashScreen from './src/screens/SplashScreen';
 import LoginScreen from './src/screens/pharmacist/LoginScreen';
 import RegisterScreen from './src/screens/pharmacist/RegisterScreen';
+import ChangePasswordScreen from './src/screens/pharmacist/ChangePasswordScreen';
 import MainTabs from './src/navigation/MainTabs';
 import AdminTabs from './src/navigation/AdminTabs';
 import { InventoryProvider } from './src/context/InventoryContext';
@@ -44,6 +45,7 @@ function Root() {
           <Stack.Screen name="Splash" component={SplashScreen} options={{ animation: 'fade' }} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
+          <Stack.Screen name="ChangePasswordRequired" component={ChangePasswordScreen} initialParams={{ forced: true }} options={{ gestureEnabled: false }} />
           <Stack.Screen name="MainApp" component={MainTabs} options={{ gestureEnabled: false }} />
           <Stack.Screen name="AdminApp" component={AdminTabs} options={{ gestureEnabled: false }} />
         </Stack.Navigator>

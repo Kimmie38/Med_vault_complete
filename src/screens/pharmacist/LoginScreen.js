@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import BrandLogo from '../../components/BrandLogo';
@@ -24,7 +24,11 @@ export default function LoginScreen({ navigation }) {
     setLoading(true);
     try {
       const result = await api.login(identifier.trim(), password);
-      navigation.replace(result.isAdmin ? 'AdminApp' : 'MainApp');
+      if (!result.isAdmin && result.mustChangePassword) {
+        navigation.replace('ChangePasswordRequired');
+      } else {
+        navigation.replace(result.isAdmin ? 'AdminApp' : 'MainApp');
+      }
     } catch (error) {
       setErrors({ identifier: error.code === 'ACCOUNT_SUSPENDED' ? 'This account is suspended. Please contact your administrator.' : undefined, password: error.code === 'ACCOUNT_SUSPENDED' ? undefined : 'We couldn’t sign you in. Check your email or staff ID and password.' });
     } finally {
@@ -61,7 +65,13 @@ export default function LoginScreen({ navigation }) {
             error={errors.password}
           />
 
-          <Pressable style={{ alignSelf: 'flex-end', marginBottom: spacing.lg }}>
+          <Pressable
+            style={{ alignSelf: 'flex-end', marginBottom: spacing.lg }}
+            onPress={() => Alert.alert(
+              'Forgot your password?',
+              'Ask your pharmacy administrator to reset it from the admin console. They\u2019ll give you a temporary password — you\u2019ll be asked to choose a new one the next time you log in.'
+            )}
+          >
             <Text style={styles.forgot}>Forgot password?</Text>
           </Pressable>
 

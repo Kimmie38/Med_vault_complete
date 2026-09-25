@@ -24,6 +24,7 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const MENU = [
+    { icon: 'key-outline', label: 'Change password', onPress: () => navigation.navigate('ChangePassword') },
     { icon: 'notifications-outline', label: 'Alert settings', onPress: () => navigation.navigate('AlertSettings') },
     { icon: 'download-outline', label: 'Export inventory (CSV)', onPress: exportCsv },
     { icon: 'help-circle-outline', label: 'Help & user guide', onPress: () => Alert.alert('User guide', 'Scan tab: add stock batches.\nHome: record a sale (oldest expiry is used first) and browse inventory.\nAlerts tab: act on expiring or low stock.\nForecast tab: see how much to reorder.') },

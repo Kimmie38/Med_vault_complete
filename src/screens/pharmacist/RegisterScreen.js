@@ -13,7 +13,7 @@ import { api } from '../../api/client';
 // Matches the User table in the documentation: name, role, email, pharmacy name (+ staff ID for login).
 const ROLES = [
   { value: 'Pharmacist', label: 'Pharmacist' },
-  { value: 'Pharmacy attendant', label: 'Pharmacy attendant' },
+  { value: 'Staff', label: 'Staff' },
 ];
 
 export default function RegisterScreen({ navigation }) {

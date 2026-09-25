@@ -16,6 +16,7 @@ import AlertsScreen from '../screens/pharmacist/AlertsScreen';
 import ForecastScreen from '../screens/pharmacist/ForecastScreen';
 import ProfileScreen from '../screens/pharmacist/ProfileScreen';
 import AlertSettingsScreen from '../screens/pharmacist/AlertSettingsScreen';
+import ChangePasswordScreen from '../screens/pharmacist/ChangePasswordScreen';
 import { useThemedStyles } from '../theme/ThemeContext';
 import { useInventory } from '../context/InventoryContext';
 
@@ -55,6 +56,7 @@ function AccountStackNavigator() {
     <AccountStack.Navigator screenOptions={{ headerShown: false }}>
       <AccountStack.Screen name="AccountMain" component={ProfileScreen} />
       <AccountStack.Screen name="AlertSettings" component={AlertSettingsScreen} />
+      <AccountStack.Screen name="ChangePassword" component={ChangePasswordScreen} />
     </AccountStack.Navigator>
   );
 }
