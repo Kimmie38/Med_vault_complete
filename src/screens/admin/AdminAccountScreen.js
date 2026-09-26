@@ -13,7 +13,7 @@ import { joinedLabel } from '../../utils/adminStats';
 const csvCell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
 
 // The administrator's own profile and settings. There is only ever one admin account.
-export default function AdminAccountScreen() {
+export default function AdminAccountScreen({ navigation }) {
   const { colors, styles, isDark, setMode } = useThemedStyles(createStyles);
   const { admin, pharmacies, totals } = useAdmin();
   const profile = admin || { name: 'Administrator', email: 'Loading…', adminId: '', role: 'Administrator', createdAt: null };
@@ -80,6 +80,17 @@ export default function AdminAccountScreen() {
           accessibilityLabel="Dark mode"
         />
       </Card>
+
+      <Text style={styles.sectionLabel}>Security</Text>
+      <View style={{ marginHorizontal: spacing.lg }}>
+        <Pressable style={styles.menuRow} onPress={() => navigation.navigate('ChangePassword')}>
+          <View style={styles.menuIcon}>
+            <Ionicons name="key-outline" size={18} color={colors.greenLight} />
+          </View>
+          <Text style={styles.menuLabel}>Change password</Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+        </Pressable>
+      </View>
 
       <Text style={styles.sectionLabel}>Data</Text>
       <View style={{ marginHorizontal: spacing.lg }}>

@@ -9,11 +9,13 @@ import AdminUserDetailScreen from '../screens/admin/AdminUserDetailScreen';
 import AdminMonitorScreen from '../screens/admin/AdminMonitorScreen';
 import AdminActivityScreen from '../screens/admin/AdminActivityScreen';
 import AdminAccountScreen from '../screens/admin/AdminAccountScreen';
+import ChangePasswordScreen from '../screens/pharmacist/ChangePasswordScreen';
 import { useThemedStyles } from '../theme/ThemeContext';
 import { useAdmin } from '../context/AdminContext';
 
 const Tab = createBottomTabNavigator();
 const UsersStack = createNativeStackNavigator();
+const AccountStack = createNativeStackNavigator();
 
 // Users tab = the list plus a user's detail page pushed on top of it.
 function UsersStackNavigator() {
@@ -22,6 +24,16 @@ function UsersStackNavigator() {
       <UsersStack.Screen name="UsersList" component={AdminUsersScreen} />
       <UsersStack.Screen name="UserDetail" component={AdminUserDetailScreen} />
     </UsersStack.Navigator>
+  );
+}
+
+// Account tab = the admin's profile plus screens reached from it (just change password, for now).
+function AccountStackNavigator() {
+  return (
+    <AccountStack.Navigator screenOptions={{ headerShown: false }}>
+      <AccountStack.Screen name="AccountMain" component={AdminAccountScreen} />
+      <AccountStack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+    </AccountStack.Navigator>
   );
 }
 
@@ -70,7 +82,7 @@ export default function AdminTabs() {
       <Tab.Screen name="Users" component={UsersStackNavigator} />
       <Tab.Screen name="Monitor" component={AdminMonitorScreen} />
       <Tab.Screen name="Activity" component={AdminActivityScreen} />
-      <Tab.Screen name="Account" component={AdminAccountScreen} />
+      <Tab.Screen name="Account" component={AccountStackNavigator} />
     </Tab.Navigator>
   );
 }

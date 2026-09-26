@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "MedVault",
-    "slug": "medvault-6uuxkv8du0nejzicracjj",
+    "slug": "medvault-bwqtkt7xd9go2cota-tqm",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -44,8 +44,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "53c5d605-0153-4793-bfc7-95ccf9c4fb72"
-      }
+        "projectId": "72154a75-0fc5-4790-bce3-c0445e887b3a"
+      },
+      "EXPO_PUBLIC_API_URL": "https://med-vault-backend-i9v7.onrender.com/api"
     },
     "owner": "medvaultapp"
   }

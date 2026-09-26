@@ -24,7 +24,6 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const MENU = [
-    { icon: 'key-outline', label: 'Change password', onPress: () => navigation.navigate('ChangePassword') },
     { icon: 'notifications-outline', label: 'Alert settings', onPress: () => navigation.navigate('AlertSettings') },
     { icon: 'download-outline', label: 'Export inventory (CSV)', onPress: exportCsv },
     { icon: 'help-circle-outline', label: 'Help & user guide', onPress: () => Alert.alert('User guide', 'Scan tab: add stock batches.\nHome: record a sale (oldest expiry is used first) and browse inventory.\nAlerts tab: act on expiring or low stock.\nForecast tab: see how much to reorder.') },
@@ -75,6 +74,17 @@ export default function ProfileScreen({ navigation }) {
           accessibilityLabel="Dark mode"
         />
       </Card>
+
+      <Text style={styles.sectionLabel}>Security</Text>
+      <View style={{ marginHorizontal: spacing.lg }}>
+        <Pressable style={styles.menuRow} onPress={() => navigation.navigate('ChangePassword')}>
+          <View style={styles.menuIcon}>
+            <Ionicons name="key-outline" size={18} color={colors.greenLight} />
+          </View>
+          <Text style={styles.menuLabel}>Change password</Text>
+          <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
+        </Pressable>
+      </View>
 
       <Text style={styles.sectionLabel}>Preferences</Text>
       <View style={{ marginHorizontal: spacing.lg, gap: spacing.sm }}>
